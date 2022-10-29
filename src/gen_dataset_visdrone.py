@@ -36,7 +36,11 @@ cls2id = {
     'tricycle': 6,
     'awning-tricycle': 7,
     'bus': 8,
-    'motor': 9
+    'motor': 9,
+    'drone': 10,
+    'helicopter': 11,
+    'bird': 12,
+    'airplane': 13
 }
 
 id2cls = {
@@ -49,7 +53,11 @@ id2cls = {
     6: 'tricycle',
     7: 'awning-tricycle',
     8: 'bus',
-    9: 'motor'
+    9: 'motor',
+    10: 'drone',
+    11: 'helicopter',
+    12: 'bird',
+    13: 'airplane'
 }
 
 
@@ -88,13 +96,19 @@ def gen_dot_train_file(data_root, rel_path, out_root, f_name='detrac.train'):
     cnt = 0
     with open(out_f_path, 'w') as f:
         root = data_root + rel_path
+        # print(f"Root: {root}")
         seqs = [x for x in os.listdir(root)]
+        if "detrac.train" in seqs:
+            seqs.remove("detrac.train")
+        # print(f"Seqs: {seqs}")
         seqs.sort()
         # seqs = sorted(seqs, key=lambda x: int(x.split('_')[-1]))
         for seq in tqdm(seqs):
             img_dir = root + '/' + seq  # + '/img1'
+            # print(f"Image Directory: {img_dir}")
             img_list = [x for x in os.listdir(img_dir)]
             img_list.sort()
+            # print(f"Img_list: {img_list}")
             for img in img_list:
                 if img.endswith('.jpg'):
                     img_path = img_dir + '/' + img
@@ -113,6 +127,11 @@ def gen_track_dataset(src_root, dst_root, viz_root=None):
     :param dst_root:
     :param viz_root:
     :return:
+        gen_track_dataset(
+            src_root="/home/ec2-user/visdrone/VisDrone2019-MOT-train",
+            dst_root="/home/ec2-user/MCMOT/dataset/VisDrone2019",
+            viz_root="/home/ec2-user/MCMOT/dataset/viz_result"
+        )
     """
     if not os.path.isdir(src_root):
         print('[Err]: invalid sr dir.')
@@ -136,7 +155,7 @@ def gen_track_dataset(src_root, dst_root, viz_root=None):
 
     # 记录总的帧数
     frame_cnt = 0
-
+    # print(f"SRC_Root: {src_root}")
     seq_names = [x for x in os.listdir(src_root + '/sequences')]
     seq_names.sort()
 
@@ -371,6 +390,12 @@ def gen_track_dataset(src_root, dst_root, viz_root=None):
 
 
 if __name__ == '__main__':
-    gen_track_dataset(src_root='/mnt/diskb/even/VisDrone2019-MOT-train',
-                      dst_root='/mnt/diskb/even/dataset/VisDrone2019',
-                      viz_root='/mnt/diskb/even/viz_result')
+    gen_track_dataset(src_root="/home/ec2-user/visdrone/VisDrone2019-MOT-train",
+                      dst_root="/home/ec2-user/MCMOT/dataset/VisDrone2019",
+                      viz_root="/home/ec2-user/MCMOT/dataset/viz_result")
+    print(f"Running gen_dot_train_file...")
+    gen_dot_train_file(data_root="/home/ec2-user/MCMOT/",
+                       rel_path="/dataset/VisDrone2019/images",
+                       out_root="/home/ec2-user/MCMOT/dataset/VisDrone2019", f_name='detrac.train')
+    
+    

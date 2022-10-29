@@ -264,10 +264,9 @@ class opts(object):
         # bus             (9),  --> 8
         # motor           (10), --> 9
         # ----------------------
-
         # others          (11)
         self.parser.add_argument('--reid_cls_ids',
-                                 default='0,1,2,3,4,5,6,7,8,9',  # '0,1,2,3,4' or '0,1,2,3,4,5,6,7,8,9'
+                                 default='0,1,2,3,4,5,6,7,8,9,10,11,12,13',  # '0,1,2,3,4' or '0,1,2,3,4,5,6,7,8,9' or '0,1,2,3,4,5,6,7,8,9,10,11,12,13'
                                  help='')  # the object classes need to do reid
 
         self.parser.add_argument('--norm_wh', action='store_true',

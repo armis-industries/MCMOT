@@ -1,15 +1,15 @@
 {
-    "root":"/mnt/diskb/even/dataset",
+    "root":"/home/ec2-user/MCMOT/",
     "train":
     {
-        "visdrone":"./data/visdrone.train"
+        "visdrone":"/home/ec2-user/MCMOT/dataset/VisDrone2019/detrac.train"
     },
     "test_emb":
     {
-        "visdrone":"./data/visdrone.train"
+        "visdrone":"/home/ec2-user/MCMOT/dataset/VisDrone2019/detrac.train"
     },
     "test":
     {
-        "visdrone":"./data/visdrone.train"
+        "visdrone":"/home/ec2-user/MCMOT/dataset/VisDrone2019/detrac.train"
     }
 }

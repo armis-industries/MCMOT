@@ -10,7 +10,7 @@ os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
 
 import torch
 
-my_visible_devs = '1'  # '0, 3'  # 设置可运行GPU编号
+my_visible_devs = '0'  # '0, 3'  # 设置可运行GPU编号
 os.environ['CUDA_VISIBLE_DEVICES'] = my_visible_devs
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -54,13 +54,12 @@ def run(opt):
 
     logger = Logger(opt)
 
-    # os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
-    # os.environ['CUDA_VISIBLE_DEVICES'] = opt.gpus_str  # 多GPU训练
-    # print("opt.gpus_str: ", opt.gpus_str)
+    os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
+    os.environ['CUDA_VISIBLE_DEVICES'] = opt.gpus_str  # 多GPU训练
+    print("opt.gpus_str: ", opt.gpus_str)
 
-    # opt.device = torch.device('cuda:0' if opt.gpus[0] >= 0 else 'cpu')  # 设置GPU
-
-    opt.device = device
+    opt.device = torch.device('cuda:0' if opt.gpus[0] >= 0 else 'cpu')  # 设置GPU
+    #opt.device = device
     opt.gpus = my_visible_devs
 
     print('Creating model...')
@@ -111,7 +110,7 @@ def run(opt):
     Trainer = train_factory[opt.task]
     trainer = Trainer(opt=opt, model=model, optimizer=optimizer)
     # trainer.set_device(opt.gpus, opt.chunk_sizes, opt.device)
-    trainer.set_device(opt.gpus, opt.chunk_sizes, device)
+    trainer.set_device(opt.gpus, opt.chunk_sizes, opt.device)
 
     best = 1e10
     for epoch in range(start_epoch + 1, opt.num_epochs + 1):
