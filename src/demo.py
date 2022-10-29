@@ -8,9 +8,9 @@ import os
 os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
 import torch
 
-my_visible_devs = '0'  # '0, 3'  # 设置可运行GPU编号
+my_visible_devs = '0'  
 os.environ['CUDA_VISIBLE_DEVICES'] = my_visible_devs
-device = torch.device('cuda: 0' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 import cv2
 import shutil
@@ -41,8 +41,8 @@ def FindFreeGPU():
     """
     os.system('nvidia-smi -q -d Memory |grep -A4 GPU|grep Free > tmp')
     memory_left_gpu = [int(x.split()[2]) for x in open('tmp', 'r').readlines()]
-
-    most_free_gpu_idx = np.argmax(memory_left_gpu)
+    if memory_left_gpu:
+        most_free_gpu_idx = np.argmax(memory_left_gpu)
     # print(str(most_free_gpu_idx))
     return int(most_free_gpu_idx)
 
@@ -100,10 +100,13 @@ def run_demo(opt):
     # opt.device = device
 
     # set device
-    opt.device = str(FindFreeGPU())
+    # opt.device = str(FindFreeGPU())
+    opt.device = str(0)
     print('Using gpu: {:s}'.format(opt.device))
     device = select_device(device='cpu' if not torch.cuda.is_available() else opt.device)
     opt.device = device
+    opt.device = torch.device('cuda:0' if opt.gpus[0] >= 0 else 'cpu')  
+
 
     try:
         if opt.input_mode == 'video':
@@ -127,7 +130,7 @@ def run_demo(opt):
                          mode='detect')
         else:
             # only for tmp detection evaluation...
-            output_dir = '/users/duanyou/c5/results_new/results_all/tmp'
+            output_dir = '/home/ec2-user/results/results_all/tmp'
             eval_imgs_output_dets(opt=opt,
                                   data_loader=data_loader,
                                   data_type='mot',
@@ -182,7 +185,7 @@ def test_single(img_path, dev):
     h_in, w_in = 608, 1088  # (608, 1088) (320, 640)
     img, _, _, _ = letterbox(img=img_0, height=h_in, width=w_in)
 
-    # Preprocess image: BGR -> RGB and H×W×C -> C×H×W
+    # Preprocess image: BGR -> RGB and HxWxC -> CxHxW
     img = img[:, :, ::-1].transpose(2, 0, 1)
     img = np.ascontiguousarray(img, dtype=np.float32)
     img /= 255.0
@@ -211,8 +214,8 @@ def test_single(img_path, dev):
             cls_inds = inds[:, cls_inds_mask[cls_id]]
 
             # gather feats for each object class
-            cls_id_feature = _tranpose_and_gather_feat(id_feature, cls_inds)  # inds: 1×128
-            cls_id_feature = cls_id_feature.squeeze(0)  # n × FeatDim
+            cls_id_feature = _tranpose_and_gather_feat(id_feature, cls_inds)  # inds: 1x128
+            cls_id_feature = cls_id_feature.squeeze(0)  # n x FeatDim
             if dev == 'cpu':
                 cls_id_feature = cls_id_feature.numpy()
             else:

@@ -110,7 +110,12 @@ class BaseTrainer(object):
                 epoch, batch_i, num_iters, phase=phase,
                 total=bar.elapsed_td, eta=bar.eta_td)
             for l in avg_loss_stats:
-                avg_loss_stats[l].update(loss_stats[l].mean().item(), batch['input'].size(0))
+                try:
+                    avg_loss_stats[l].update(loss_stats[l].mean().item(), batch['input'].size(0))
+                except AttributeError as e:
+                    print(f"Error on batch: {batch}")
+                    continue
+                     
                 Bar.suffix = Bar.suffix + '|{} {:.4f} '.format(l, avg_loss_stats[l].avg)
 
             # multi-scale img_size display
