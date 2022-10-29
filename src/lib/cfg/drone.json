@@ -1,0 +1,15 @@
+{
+    "root":"/home/ec2-user/MCMOT/",
+    "train":
+    {
+        "visdrone":"/home/ec2-user/MCMOT/dataset/drone-data/detrac.train"
+    },
+    "test_emb":
+    {
+        "visdrone":"/home/ec2-user/MCMOT/dataset/drone-data/detrac.train"
+    },
+    "test":
+    {
+        "visdrone":"/home/ec2-user/MCMOT/dataset/drone-data/detrac.train"
+    }
+}
